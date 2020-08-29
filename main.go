@@ -2,8 +2,12 @@ package main
 
 import (
 	"fmt"
-	bitarray "gitlab.com/S4eed3esm/bit-array-in-golang/bitarray"
+
+	bitarray "gitlab.com/S4eed3sm/bit-array-in-golang/bitarray"
+	utils "gitlab.com/S4eed3sm/bit-array-in-golang/utils"
 )
+
+var testString string = "11110101010101011110110100010100101010101000001011110010101011101010111110101011111011010001010010101010100000101111001010101110101011111010101111111111010101001010000001101001010100111010101010111010010101001111111111111111111111110101001010101001111111111111001010101001"
 
 func main() {
 	//x := []uint64{uint64(0b1111010101010101), uint64(0b1110110100010100101010101000001011110010101011101010111110101011), uint64(0b1110110100010100101010101000001011110010101011101010111110101011),
@@ -27,4 +31,47 @@ func main() {
 	a = "11110101010101011110110100010100101010101000001011110010101011101010111110101011111011010001010010101010100000101111001010101110101011111010101111111111010101001010000001101001010100111010101010111010010101001111111111111111111111110101001010101001111111111111001010101001"
 	barr := bitarray.Bitarray{}
 	barr.InitilizeByStrValue(a)
+	for i := 0; i < 10; i++ {
+		fmt.Println(barr.Get(uint64(i)))
+	}
+
+	barr2 := bitarray.Bitarray{}
+	revStr := utils.ReverseString(testString)
+	fmt.Println("revStr", revStr)
+	for i, v := range revStr {
+		barr2.Set(uint64(i), uint8(v-'0'))
+	}
+	// barr2.Set(1, 1)
+	fmt.Printf("%v\n", barr2.Compare(&barr))
+
+	barr3 := bitarray.Bitarray{}
+	barr3.InitilizeByStrValue(a)
+	fmt.Printf("%v\n", barr2.Compare(&barr3))
+
+	barr4 := bitarray.Bitarray{}
+	barr4.InitilizeByBitarray(&barr3)
+
+	fmt.Printf("%v\n", barr4.Compare(&barr3))
+
+	s := barr.ToString()
+	fmt.Println(*s == testString)
+
+	barrRev := bitarray.Bitarray{}
+	barrRev.InitilizeByStrValue(revStr)
+
+	res := barr.And(&barrRev)
+	resStr := "10010101010001011110110100010100000010101000001011110010101011100010101000001001010001010000000010000010000000000010001010101110100001011010000101110101010001000000000001000001000000001010001010010000010101000111010101001111010000010101000000101000101101111010001010101001"
+
+	result := bitarray.Bitarray{}
+	result.InitilizeByStrValue(resStr)
+
+	fmt.Println(result.Compare(res))
+
+	compBarr := barr.Not()
+	compAandA := barr.And(compBarr)
+	fmt.Println("compAandA", *compAandA.ToString())
+
+	barrZero := bitarray.Bitarray{}
+	barrZero.InitilizeBySize(1)
+	fmt.Println(*barrZero.ToString())
 }
