@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"math"
 	"strconv"
-
-	"gitlab.com/S4eed3sm/bit-array-in-golang/utils"
 )
 
 var blockLen int = 64
@@ -18,7 +16,7 @@ type Bitarray struct {
 func (b *Bitarray) getStrgIdxInnerIdx(i uint64) (strgIdx uint64, innerIdx uint64, err error) {
 
 	if uint64(len(b.storage)*64) <= i {
-		return 0, 0, fmt.Errorf("b.storage have not enough lenght")
+		return 0, 0, fmt.Errorf("b.storage have not enough length")
 	}
 	strgIdx = uint64(len(b.storage)) - i/64 - 1
 	innerIdx = 1 << (i % 64)
@@ -26,20 +24,20 @@ func (b *Bitarray) getStrgIdxInnerIdx(i uint64) (strgIdx uint64, innerIdx uint64
 	return strgIdx, innerIdx, err
 }
 
-//InitilizeBySize init bitarray with given size
-func (b *Bitarray) InitilizeBySize(size uint64) error {
+//InitializeBySize init bitarray with given size
+func (b *Bitarray) InitializeBySize(size uint64) error {
 	storageSize := uint64(math.Ceil(float64(size) / 64))
 	b.storage = make([]uint64, storageSize)
 	return nil
 }
 
-//InitilizeByStrValue take a value like "0110111001"
-func (b *Bitarray) InitilizeByStrValue(val string) error {
+//InitializeByStrValue take a value like "0110111001"
+func (b *Bitarray) InitializeByStrValue(val string) error {
 
-	val = utils.RemoveRightZeros(val)
+	val = removeRightZeros(val)
 
 	size := uint64(len(val))
-	err := b.InitilizeBySize(size)
+	err := b.InitializeBySize(size)
 	var tmp uint64
 
 	if err == nil {
@@ -61,21 +59,21 @@ func (b *Bitarray) InitilizeByStrValue(val string) error {
 	return err
 }
 
-//InitilizeByValue take a uint like 0b111010
-func (b *Bitarray) InitilizeByValue(val uint64) error {
+//InitializeByValue take a uint like 0b111010
+func (b *Bitarray) InitializeByValue(val uint64) error {
 
-	err := b.InitilizeBySize(64)
+	err := b.InitializeBySize(64)
 	b.storage[0] = val
 	return err
 }
 
-//
-func (b *Bitarray) InitilizeByBitarray(ba *Bitarray) error {
+//InitializeByBitarray: clone given bitarray
+func (b *Bitarray) InitializeByBitarray(ba *Bitarray) error {
 	b.storage = ba.storage
 	return nil
 }
 
-//Get i'th index of bitarray
+//Get ith index of bitarray
 func (b *Bitarray) Get(i uint64) (uint8, error) {
 	strgIdx, innerIdx, err := b.getStrgIdxInnerIdx(i)
 	if err != nil {
@@ -94,6 +92,7 @@ func (b *Bitarray) resize(i uint64) error {
 	return nil
 }
 
+//Set: set given index to 0 or 1
 func (b *Bitarray) Set(i uint64, v uint8) error {
 	strgIdx, innerIdx, err := b.getStrgIdxInnerIdx(i)
 	if err != nil {
@@ -114,8 +113,13 @@ func (b *Bitarray) Set(i uint64, v uint8) error {
 	return nil
 }
 
+//Compare: compare given bitarray with caller bitarray and return true or false
+//'0001101' is equal to '01101' is equal to '1101'
 func (b *Bitarray) Compare(ba *Bitarray) bool {
 	if len(b.storage) != len(ba.storage) {
+		if *b.ToString() == *ba.ToString() {
+			return true
+		}
 		return false
 	}
 
@@ -127,6 +131,7 @@ func (b *Bitarray) Compare(ba *Bitarray) bool {
 	return true
 }
 
+//And: Bitwise And given bitarray with caller bitarray and return bitarray result
 func (b *Bitarray) And(ba *Bitarray) (res *Bitarray) {
 	tmp := &Bitarray{
 		storage: []uint64{},
@@ -144,6 +149,7 @@ func (b *Bitarray) And(ba *Bitarray) (res *Bitarray) {
 	return res
 }
 
+//Or: Bitwise Or given bitarray with caller bitarray and return bitarray result
 func (b *Bitarray) Or(ba *Bitarray) (res *Bitarray) {
 	tmp := &Bitarray{
 		storage: []uint64{},
@@ -162,6 +168,7 @@ func (b *Bitarray) Or(ba *Bitarray) (res *Bitarray) {
 	return res
 }
 
+//Xor: Bitwise Xor given bitarray with caller bitarray and return bitarray result
 func (b *Bitarray) Xor(ba *Bitarray) (res *Bitarray) {
 	tmp := &Bitarray{
 		storage: []uint64{},
@@ -179,6 +186,7 @@ func (b *Bitarray) Xor(ba *Bitarray) (res *Bitarray) {
 	return res
 }
 
+//Not: Bitwise Not caller bitarray and return bitarray result
 func (b *Bitarray) Not() (res *Bitarray) {
 	res = &Bitarray{
 		storage: make([]uint64, len(b.storage)),
@@ -189,11 +197,12 @@ func (b *Bitarray) Not() (res *Bitarray) {
 	return res
 }
 
+//ToString: return string representation of bitarray
 func (b *Bitarray) ToString() *string {
 	res := ""
 	for _, v := range b.storage {
 		res += fmt.Sprintf("%b", v)
 	}
-	res = utils.RemoveRightZeros(res)
+	res = removeRightZeros(res)
 	return &res
 }

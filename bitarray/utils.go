@@ -1,4 +1,4 @@
-package utils
+package bitarray
 
 //Revers get string and return revers of it
 func ReverseString(s string) string {
@@ -10,7 +10,7 @@ func ReverseString(s string) string {
 	return string(rns)
 }
 
-func RemoveRightZeros(s string) string {
+func removeRightZeros(s string) string {
 	for len(s) != 0 && s[0] == '0' {
 		s = s[1:]
 	}
@@ -18,4 +18,13 @@ func RemoveRightZeros(s string) string {
 		s = "0"
 	}
 	return s
+}
+
+func isZeroArray(a *[]uint64) bool {
+	for _, v := range *a {
+		if v != 0 {
+			return false
+		}
+	}
+	return true
 }
