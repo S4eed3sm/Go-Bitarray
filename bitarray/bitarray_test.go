@@ -126,6 +126,15 @@ func TestBitarray(t *testing.T) {
 		}
 	}
 
+	checkShiftRight := func(t *testing.T, b *Bitarray, shiftCount int, result *Bitarray) {
+		t.Helper()
+		t.Logf("hello %s log", "test")
+		res := b.ShiftRight(shiftCount)
+		if res.Compare(result) == false {
+			t.Errorf("res[%s] != result[%s]", *res.ToString(), *result.ToString())
+		}
+	}
+
 	t.Run("TestInitBySize", func(t *testing.T) {
 		b := Bitarray{}
 		b.InitializeBySize(1000)
@@ -249,5 +258,16 @@ func TestBitarray(t *testing.T) {
 		resStr := "111101010101010111101101000101001010101010000010111100101010111010101111101010111110110100010100101010101000001011110010101011101010111110101011111111110101010010100000011010010101001110101010101110100101010011111111111111111111111101010010101010011111111111110010101010010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
 		result.InitializeByStrValue(resStr)
 		checkShiftLeft(t, &b, 127, &result)
+	})
+
+	t.Run("TestShiftRight", func(t *testing.T) {
+		b := Bitarray{}
+		result := Bitarray{}
+
+		b.InitializeByStrValue(testString)
+		//testString << 127
+		resStr := "1111010101010101111011010001010010101010100000101111001010101110101011111010101111101101000101001010101010000010111100101010111010101111101010111"
+		result.InitializeByStrValue(resStr)
+		checkShiftRight(t, &b, 127, &result)
 	})
 }

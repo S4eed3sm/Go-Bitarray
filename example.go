@@ -52,4 +52,10 @@ func main() {
 
 	b.InitializeByStrValue(testString)
 	fmt.Println("ShiftLeft:", *b.ShiftLeft(127).ToString())
+
+	b.InitializeByStrValue(testString)
+	rb := b.ShiftRight(127)
+	resStr = "1111010101010101111011010001010010101010100000101111001010101110101011111010101111101101000101001010101010000010111100101010111010101111101010111"
+	result.InitializeByStrValue(resStr)
+	print(result.Compare(rb))
 }

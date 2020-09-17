@@ -10,7 +10,7 @@ func ReverseString(s string) string {
 	return string(rns)
 }
 
-func removeRightZeros(s string) string {
+func removeLeftZeros(s string) string {
 	for len(s) != 0 && s[0] == '0' {
 		s = s[1:]
 	}

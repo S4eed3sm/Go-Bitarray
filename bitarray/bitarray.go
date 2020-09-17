@@ -35,7 +35,7 @@ func (b *Bitarray) InitializeBySize(size uint64) error {
 //InitializeByStrValue take a value like "0110111001"
 func (b *Bitarray) InitializeByStrValue(val string) error {
 
-	val = removeRightZeros(val)
+	val = removeLeftZeros(val)
 
 	size := uint64(len(val))
 	err := b.InitializeBySize(size)
@@ -206,7 +206,7 @@ func (b *Bitarray) ToString() *string {
 		_ = tmp
 		res += fmt.Sprintf("%064b", v)
 	}
-	res = removeRightZeros(res)
+	res = removeLeftZeros(res)
 	return &res
 }
 
@@ -232,6 +232,39 @@ func (b *Bitarray) ShiftLeft(n int) (res *Bitarray) {
 	}
 	for i := 0; i < n/64; i++ {
 		res.storage = append(res.storage, 0)
+	}
+	return res
+}
+
+func (b *Bitarray) ShiftRight(n int) (res *Bitarray) {
+	res = &Bitarray{}
+	if n == 0 {
+		res.InitializeByBitarray(b)
+		return res
+	}
+
+	size := len(b.storage)
+	dr := n / 64
+
+	if dr >= size {
+		res.InitializeBySize(1)
+		return res
+	}
+
+	sr := n % 64
+	r := uint64(math.Pow(2, float64(sr))) - 1
+	res.storage = make([]uint64, len(b.storage)-dr)
+	copy(res.storage, b.storage[:len(b.storage)-dr])
+
+	var shiftCarry uint64 = 0
+	for i, v := range res.storage {
+		res.storage[i] = res.storage[i] >> sr
+		res.storage[i] += shiftCarry
+		shiftCarry = (v & r)
+		shiftCarry = shiftCarry << (64 - sr)
+	}
+	for res.storage[0] == 0 {
+		res.storage = res.storage[1:]
 	}
 	return res
 }
