@@ -7,6 +7,7 @@ import (
 )
 
 var blockLen int = 64
+var msb uint64 = 0x8000000000000000
 
 //Bitarray array struct
 type Bitarray struct {
@@ -24,7 +25,7 @@ func (b *Bitarray) getStrgIdxInnerIdx(i uint64) (strgIdx uint64, innerIdx uint64
 	return strgIdx, innerIdx, err
 }
 
-//InitializeBySize init bitarray with given size
+//InitializeBySize init bitarray by given size
 func (b *Bitarray) InitializeBySize(size uint64) error {
 	storageSize := uint64(math.Ceil(float64(size) / 64))
 	b.storage = make([]uint64, storageSize)
@@ -73,7 +74,7 @@ func (b *Bitarray) InitializeByBitarray(ba *Bitarray) error {
 	return nil
 }
 
-//Get ith index of bitarray
+//Get i-th index of bitarray
 func (b *Bitarray) Get(i uint64) (uint8, error) {
 	strgIdx, innerIdx, err := b.getStrgIdxInnerIdx(i)
 	if err != nil {
@@ -201,8 +202,36 @@ func (b *Bitarray) Not() (res *Bitarray) {
 func (b *Bitarray) ToString() *string {
 	res := ""
 	for _, v := range b.storage {
-		res += fmt.Sprintf("%b", v)
+		tmp := fmt.Sprintf("%064b", v)
+		_ = tmp
+		res += fmt.Sprintf("%064b", v)
 	}
 	res = removeRightZeros(res)
 	return &res
+}
+
+func (b *Bitarray) ShiftLeft(n int) (res *Bitarray) {
+	if n == 0 {
+		res = &Bitarray{}
+		res.InitializeByBitarray(b)
+		return res
+	}
+
+	size := len(b.storage)
+	sr := 64 - (n % 64)
+	sl := n % 64
+	if b.storage[0]>>(sr) != 0 {
+		size++
+	}
+	res = &Bitarray{
+		storage: make([]uint64, size),
+	}
+	for i, v := range b.storage {
+		res.storage[i+1] = v << sl
+		res.storage[i] += v >> sr
+	}
+	for i := 0; i < n/64; i++ {
+		res.storage = append(res.storage, 0)
+	}
+	return res
 }

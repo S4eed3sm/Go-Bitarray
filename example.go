@@ -26,14 +26,14 @@ func main() {
 		b2.Set(uint64(i), uint8(v-'0'))
 	}
 
-	fmt.Printf("%v\n", b2.Compare(&b))
+	fmt.Printf("Compare: %v\n", b2.Compare(&b))
 
 	b4.InitializeByBitarray(&b3)
 
-	fmt.Printf("%v\n", b4.Compare(&b3))
+	fmt.Printf("Compare: %v\n", b4.Compare(&b3))
 
 	s := b.ToString()
-	fmt.Println(*s == testString)
+	fmt.Println("testOfToString:", *s == testString)
 
 	bRev.InitializeByStrValue(revStr)
 
@@ -41,12 +41,15 @@ func main() {
 	resStr := "10010101010001011110110100010100000010101000001011110010101011100010101000001001010001010000000010000010000000000010001010101110100001011010000101110101010001000000000001000001000000001010001010010000010101000111010101001111010000010101000000101000101101111010001010101001"
 
 	result.InitializeByStrValue(resStr)
-	fmt.Println(result.Compare(res))
+	fmt.Println("Compare:", result.Compare(res))
 
 	b.InitializeByValue(0b11010011)
 	b1.InitializeByStrValue("10110010")
-	fmt.Println(*b.And(&b1).ToString())
-	fmt.Println(*b.Or(&b1).ToString())
-	fmt.Println(*b.Xor(&b1).ToString())
-	fmt.Println(*b.Not().ToString())
+	fmt.Println("And:", *b.And(&b1).ToString())
+	fmt.Println("Or:", *b.Or(&b1).ToString())
+	fmt.Println("Xor:", *b.Xor(&b1).ToString())
+	fmt.Println("Not:", *b.Not().ToString())
+
+	b.InitializeByStrValue(testString)
+	fmt.Println("ShiftLeft:", *b.ShiftLeft(127).ToString())
 }

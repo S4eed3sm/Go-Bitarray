@@ -1,6 +1,6 @@
-Pure golang implementation of bitarray. Array size is limited to 2^64(uint64). Bitwise functions {And, Or, Xor, Not} are  supported.
+Pure-Golang and memory efficient implementation of bitarray. The array size is limited to 2^64(uint64). Bitwise {And, Or, Xor, Not} functions are supported.
 
-### You Can initialize very large bitarray string:
+### First, initialize a large bitarray string:
 ```go
 var testString string = "11110101010101011110110100010100101010101000001011110010101011101010111110101011111011010001010010101010100000101111001010101110101011111010101111111111010101001010000001101001010100111010101010111010010101001111111111111111111111110101001010101001111111111111001010101001"
 b := bitarray.Bitarray{}
@@ -10,7 +10,7 @@ b.Get(1)//returns 0
 b.Get(2)//returns 0
 b.Get(3)//returns 1
 ```
-### You can Compare two bitarray:
+### Compare two bitarray:
 ```go
 b := bitarray.Bitarray{}
 b1 := bitarray.Bitarray{}
@@ -20,7 +20,7 @@ b1.InitializeByValue(v)
 b.Compare(b1)//returns true
 ```
 
-### You can use the Boolean functions And, OR, Xor and Not
+### Bitwise {And, Or, Xor and Not} functions are also be used:
 ```go
 b := bitarray.Bitarray{}
 b1 := bitarray.Bitarray{}
