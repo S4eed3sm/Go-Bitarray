@@ -128,10 +128,17 @@ func TestBitarray(t *testing.T) {
 
 	checkShiftRight := func(t *testing.T, b *Bitarray, shiftCount int, result *Bitarray) {
 		t.Helper()
-		t.Logf("hello %s log", "test")
 		res := b.ShiftRight(shiftCount)
 		if res.Compare(result) == false {
 			t.Errorf("res[%s] != result[%s]", *res.ToString(), *result.ToString())
+		}
+	}
+
+	checkFlip := func(t *testing.T, b *Bitarray, i uint64, result *Bitarray) {
+		t.Helper()
+		b.Flip(i)
+		if b.Compare(result) == false {
+			t.Errorf("b[%s] != result[%s]", *b.ToString(), *result.ToString())
 		}
 	}
 
@@ -269,5 +276,16 @@ func TestBitarray(t *testing.T) {
 		resStr := "1111010101010101111011010001010010101010100000101111001010101110101011111010101111101101000101001010101010000010111100101010111010101111101010111"
 		result.InitializeByStrValue(resStr)
 		checkShiftRight(t, &b, 127, &result)
+	})
+
+	t.Run("TestFlip", func(t *testing.T) {
+		b := Bitarray{}
+		result := Bitarray{}
+
+		b.InitializeByStrValue(testString)
+		//testString << 127
+		resStr := "11110101010101011110110100010100101010101000001011110010101011101010111110101011111011010001010010101010100000101111001010101110101011111010101101111111010101001010000001101001010100111010101010111010010101001111111111111111111111110101001010101001111111111111001010101001"
+		result.InitializeByStrValue(resStr)
+		checkFlip(t, &b, 127, &result)
 	})
 }

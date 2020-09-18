@@ -69,8 +69,9 @@ func (b *Bitarray) InitializeByValue(val uint64) error {
 }
 
 //InitializeByBitarray: clone given bitarray
-func (b *Bitarray) InitializeByBitarray(ba *Bitarray) error {
-	b.storage = ba.storage
+func (b *Bitarray) InitializeByBitarray(bSrc *Bitarray) error {
+	b.storage = make([]uint64, len(bSrc.storage))
+	copy(b.storage, bSrc.storage)
 	return nil
 }
 
@@ -267,4 +268,13 @@ func (b *Bitarray) ShiftRight(n int) (res *Bitarray) {
 		res.storage = res.storage[1:]
 	}
 	return res
+}
+
+func (b *Bitarray) Flip(i uint64) error {
+	v, err := b.Get(i)
+	if err != nil {
+		return err
+	}
+	b.Set(i, 1-v)
+	return nil
 }
